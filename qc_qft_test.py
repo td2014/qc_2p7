@@ -72,9 +72,9 @@ print
 # Set up state corresponding to [0 0 0 1 0 0 0 0]
 print('Calculation 2:')
 p = pq.Program() # clear existing results
-state_prep = pq.Program().inst(X(0))
-add_dummy_qubits = pq.Program().inst(X(1), I(2))
-wavf, _ = qvm.wavefunction(state_prep + add_dummy_qubits)
+state_prep = pq.Program().inst(X(0)).inst(X(1)).inst(I(2))
+###add_dummy_qubits = pq.Program().inst(X(1), X(2))
+wavf, _ = qvm.wavefunction(state_prep)
 print('PYQUIL State:')
 print(wavf)
 print
@@ -91,12 +91,24 @@ print
 print('numpy IFFT:')
 print(res)
 
-
-
 #
-# Interesting.  State 001 matches IFFT, but 011 does not.
-# Sign differences.
+# Interesting, it seems:  State 001 matches IFFT, but 011 does not.
+# Sign differences in convention??
 #
+#
+arg1 = pi/4.0*1j
+arg2 = pi*3.0/4.0*1j
+n = 8.0
+norm = 1.0/np.sqrt(n)
+
+# m=1
+m=1
+a1 = norm*np.exp(arg1*m)
+a2 = norm*np.exp(arg2*m)
+
+print
+print('a1 = ', a1)
+print('a2 = ', a2)
 
 #
 # End of script

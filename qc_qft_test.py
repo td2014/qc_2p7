@@ -43,7 +43,35 @@ def qft3(q0, q1, q2):
 # Examine program
 print(qft3(0, 1, 2))
 
+# Set up state corresponding to [0 1 0 0 0 0 0 0]
+print('Calculation 1:')
+state_prep = pq.Program().inst(X(0))
+add_dummy_qubits = pq.Program().inst(I(1), I(2))
+wavf, _ = qvm.wavefunction(state_prep + add_dummy_qubits)
+print('PYQUIL State:')
+print(wavf)
+print
+
+# Combine state and qft
+wavf, _ = qvm.wavefunction(state_prep + qft3(0, 1, 2))
+print('PYQUIL QFT:')
+print(wavf.amplitudes)
+
+# Compare to numpy computation
+from numpy.fft import ifft
+res = ifft([0,1,0,0,0,0,0,0], norm="ortho")
+print
+print('numpy IFFT:')
+print(res)
+print
+
+#
+# Now try a different computation:
+#
+
 # Set up state corresponding to [0 0 0 1 0 0 0 0]
+print('Calculation 2:')
+p = pq.Program() # clear existing results
 state_prep = pq.Program().inst(X(0))
 add_dummy_qubits = pq.Program().inst(X(1), I(2))
 wavf, _ = qvm.wavefunction(state_prep + add_dummy_qubits)
@@ -53,7 +81,7 @@ print
 
 # Combine state and qft
 wavf, _ = qvm.wavefunction(state_prep + qft3(0, 1, 2))
-print('PYQUIL FFT:')
+print('PYQUIL QFT:')
 print(wavf.amplitudes)
 
 # Compare to numpy computation
@@ -62,6 +90,8 @@ res = ifft([0,0,0,1,0,0,0,0], norm="ortho")
 print
 print('numpy IFFT:')
 print(res)
+
+
 
 #
 # Interesting.  State 001 matches IFFT, but 011 does not.
